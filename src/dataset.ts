@@ -133,6 +133,46 @@ export function regressGaussian(numSamples: number, noise: number):
   return points;
 }
 
+export function regressCubic(numSamples: number, noise: number):
+  Example2D[] {
+  let points: Example2D[] = [];
+  let radius = 6;
+  let labelScale = d3.scale.linear()
+    .domain([-radius, radius])
+    .range([-1, 1]);
+
+  for (let i = 0; i < numSamples; i++) {
+    let x = randUniform(-radius, radius);
+    let y = randUniform(-radius, radius);
+    let noiseX = randUniform(-radius, radius) * noise;
+    let noiseY = randUniform(-radius, radius) * noise;
+    // y = x^3 with noise
+    let label = labelScale(Math.pow(x + noiseX, 3));
+    points.push({x, y, label});
+  }
+  return points;
+}
+
+export function regressSine(numSamples: number, noise: number):
+  Example2D[] {
+  let points: Example2D[] = [];
+  let radius = 6;
+  let labelScale = d3.scale.linear()
+    .domain([-2, 2])  // Changed domain to account for sum of sin and cos
+    .range([-1, 1]);
+
+  for (let i = 0; i < numSamples; i++) {
+    let x1 = randUniform(-radius, radius);
+    let x2 = randUniform(-radius, radius);
+    let noiseX1 = randUniform(-radius, radius) * noise;
+    let noiseX2 = randUniform(-radius, radius) * noise;
+    // y = sin(x₁) + cos(x₂) with noise
+    let label = labelScale(Math.sin(x1 + noiseX1) + Math.cos(x2 + noiseX2));
+    points.push({x: x1, y: x2, label});
+  }
+  return points;
+}
+
 export function classifySpiralData(numSamples: number, noise: number):
     Example2D[] {
   let points: Example2D[] = [];

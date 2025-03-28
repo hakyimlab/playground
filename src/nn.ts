@@ -134,6 +134,10 @@ export class Activations {
     output: x => x,
     der: x => 1
   };
+  public static CUBIC: ActivationFunction = {
+    output: x => x * x * x,
+    der: x => 3 * x * x
+  };
 }
 
 /** Build-in regularization functions */

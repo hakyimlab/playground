@@ -24,7 +24,8 @@ export let activations: {[key: string]: nn.ActivationFunction} = {
   "relu": nn.Activations.RELU,
   "tanh": nn.Activations.TANH,
   "sigmoid": nn.Activations.SIGMOID,
-  "linear": nn.Activations.LINEAR
+  "linear": nn.Activations.LINEAR,
+  "cubic": nn.Activations.CUBIC
 };
 
 /** A map between names and regularization functions. */
@@ -45,7 +46,9 @@ export let datasets: {[key: string]: dataset.DataGenerator} = {
 /** A map between dataset names and functions that generate regression data. */
 export let regDatasets: {[key: string]: dataset.DataGenerator} = {
   "reg-plane": dataset.regressPlane,
-  "reg-gauss": dataset.regressGaussian
+  "reg-gauss": dataset.regressGaussian,
+  "reg-cubic": dataset.regressCubic,
+  "reg-sine": dataset.regressSine
 };
 
 export function getKeyFromValue(obj: any, value: any): string {
