@@ -153,7 +153,7 @@ export function regressCubic(numSamples: number, noise: number):
   return points;
 }
 
-export function regressSine(numSamples: number, noise: number):
+export function regressSin1Cos2(numSamples: number, noise: number):
   Example2D[] {
   let points: Example2D[] = [];
   let radius = 6;

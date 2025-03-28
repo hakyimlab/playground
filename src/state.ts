@@ -48,7 +48,7 @@ export let regDatasets: {[key: string]: dataset.DataGenerator} = {
   "reg-plane": dataset.regressPlane,
   "reg-gauss": dataset.regressGaussian,
   "reg-cubic": dataset.regressCubic,
-  "reg-sine": dataset.regressSine
+  "reg-sin1cos2": dataset.regressSin1Cos2
 };
 
 export function getKeyFromValue(obj: any, value: any): string {
