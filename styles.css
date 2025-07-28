@@ -35,6 +35,16 @@ h1 b {
   color: rgba(255, 255, 255, 1);
 }
 
+header h1 a {
+  color: #8395a7;
+  text-decoration: none;
+}
+
+header h1 a:hover {
+  color: #a7b5c4;
+  text-decoration: underline;
+}
+
 h2 {
   margin: 5px 0;
   font-weight: 300;
