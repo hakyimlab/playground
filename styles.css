@@ -493,6 +493,21 @@ g.column rect {
   stroke: #999;
 }
 
+#pred-vs-true .tick line {
+  stroke: #ddd;
+  stroke-width: 0.5;
+}
+
+#pred-vs-true .tick text {
+  fill: #aaa;
+  font-size: 9px;
+}
+
+#pred-vs-true .domain {
+  stroke: #bbb;
+  stroke-width: 0.5;
+}
+
 /* Data column */
 
 .vcenter {

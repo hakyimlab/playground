@@ -45,6 +45,7 @@ export let datasets: {[key: string]: dataset.DataGenerator} = {
 
 /** A map between dataset names and functions that generate regression data. */
 export let regDatasets: {[key: string]: dataset.DataGenerator} = {
+  "reg-linear": dataset.regressLinear,
   "reg-plane": dataset.regressPlane,
   "reg-gauss": dataset.regressGaussian,
   "reg-cubic": dataset.regressCubic,
@@ -147,7 +148,7 @@ export class State {
   percTrainData = 50;
   activation = nn.Activations.TANH;
   regularization: nn.RegularizationFunction = null;
-  problem = Problem.CLASSIFICATION;
+  problem = Problem.REGRESSION;
   initZero = false;
   hideText = false;
   collectStats = false;
@@ -155,7 +156,7 @@ export class State {
   hiddenLayerControls: any[] = [];
   networkShape: number[] = [4, 2];
   x = true;
-  y = true;
+  y = false;
   xTimesY = false;
   xSquared = false;
   ySquared = false;
@@ -164,7 +165,7 @@ export class State {
   cosY = false;
   sinY = false;
   dataset: dataset.DataGenerator = dataset.classifyCircleData;
-  regDataset: dataset.DataGenerator = dataset.regressPlane;
+  regDataset: dataset.DataGenerator = dataset.regressCubic;
   seed: string;
 
   /**

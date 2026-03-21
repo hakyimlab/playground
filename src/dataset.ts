@@ -72,6 +72,24 @@ export function classifyTwoGaussData(numSamples: number, noise: number):
   return points;
 }
 
+export function regressLinear(numSamples: number, noise: number):
+  Example2D[] {
+  let points: Example2D[] = [];
+  let radius = 6;
+  let labelScale = d3.scale.linear()
+    .domain([-radius, radius])
+    .range([-1, 1]);
+
+  for (let i = 0; i < numSamples; i++) {
+    let x = randUniform(-radius, radius);
+    let y = randUniform(-radius, radius);
+    let noiseX = randUniform(-radius, radius) * noise;
+    let label = labelScale(x + noiseX);
+    points.push({x, y, label});
+  }
+  return points;
+}
+
 export function regressPlane(numSamples: number, noise: number):
   Example2D[] {
   let radius = 6;

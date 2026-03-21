@@ -169,6 +169,7 @@ let iter = 0;
 let trainData: Example2D[] = [];
 let testData: Example2D[] = [];
 let network: nn.Node[][] = null;
+let showPredVsTrue = false;
 let lossTrain = 0;
 let lossTest = 0;
 let player = new Player();
@@ -272,6 +273,16 @@ function makeGUI() {
   });
   // Check/uncheck the checkbox according to the current state.
   showTestData.property("checked", state.showTestData);
+
+  let predVsTrueCheckbox = d3.select("#show-pred-vs-true");
+  predVsTrueCheckbox.on("change", function() {
+    showPredVsTrue = this.checked;
+    userHasInteracted();
+    d3.select("#pred-vs-true").style("display", showPredVsTrue ? "block" : "none");
+    if (showPredVsTrue) {
+      updatePredVsTruePlot();
+    }
+  });
 
   let discretize = d3.select("#discretize").on("change", function() {
     state.discretize = this.checked;
@@ -837,6 +848,88 @@ function updateDecisionBoundary(network: nn.Node[][], firstTime: boolean) {
   }
 }
 
+let predVsTrueSvg: any = null;
+let predVsTrue_xScale: any = null;
+let predVsTrue_yScale: any = null;
+
+function initPredVsTruePlot(): void {
+  let size = 200;
+  let margin = {top: 10, right: 10, bottom: 30, left: 35};
+  let w = size - margin.left - margin.right;
+  let h = size - margin.top - margin.bottom;
+
+  predVsTrue_xScale = d3.scale.linear().domain([-1, 1]).range([0, w]);
+  predVsTrue_yScale = d3.scale.linear().domain([-1, 1]).range([h, 0]);
+
+  let container = d3.select("#pred-vs-true");
+  container.selectAll("*").remove();
+
+  let svg = container.append("svg")
+    .attr("width", size).attr("height", size)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Diagonal line (perfect prediction)
+  svg.append("line")
+    .attr("class", "diagonal")
+    .attr("x1", predVsTrue_xScale(-1)).attr("y1", predVsTrue_yScale(-1))
+    .attr("x2", predVsTrue_xScale(1)).attr("y2", predVsTrue_yScale(1))
+    .style("stroke", "#ccc").style("stroke-dasharray", "4,4");
+
+  // Axes
+  svg.append("g")
+    .attr("transform", `translate(0,${h})`)
+    .call(d3.svg.axis().scale(predVsTrue_xScale).orient("bottom").ticks(5))
+    .append("text")
+    .attr("x", w / 2).attr("y", 25)
+    .style("text-anchor", "middle").style("font-size", "10px").style("fill", "#333")
+    .text("True");
+
+  svg.append("g")
+    .call(d3.svg.axis().scale(predVsTrue_yScale).orient("left").ticks(5))
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -h / 2).attr("y", -28)
+    .style("text-anchor", "middle").style("font-size", "10px").style("fill", "#333")
+    .text("Predicted");
+
+  svg.append("g").attr("class", "dots");
+  predVsTrueSvg = svg;
+}
+
+function updatePredVsTruePlot(): void {
+  if (!showPredVsTrue || network == null || predVsTrueSvg == null) {
+    return;
+  }
+  let data: {trueVal: number, predVal: number}[] = [];
+  for (let i = 0; i < testData.length; i++) {
+    let input = constructInput(testData[i].x, testData[i].y);
+    let output = nn.forwardProp(network, input);
+    data.push({trueVal: testData[i].label, predVal: output});
+  }
+  // Auto-scale domain based on data range
+  if (data.length > 0) {
+    let allVals = data.map(d => d.trueVal).concat(data.map(d => d.predVal));
+    let lo = Math.min(...allVals);
+    let hi = Math.max(...allVals);
+    let pad = (hi - lo) * 0.1 || 0.1;
+    predVsTrue_xScale.domain([lo - pad, hi + pad]);
+    predVsTrue_yScale.domain([lo - pad, hi + pad]);
+    // Update diagonal
+    predVsTrueSvg.select("line.diagonal")
+      .attr("x1", predVsTrue_xScale(lo - pad)).attr("y1", predVsTrue_yScale(lo - pad))
+      .attr("x2", predVsTrue_xScale(hi + pad)).attr("y2", predVsTrue_yScale(hi + pad));
+  }
+
+  let dots = predVsTrueSvg.select("g.dots").selectAll("circle").data(data);
+  dots.enter().append("circle").attr("r", 3).style("opacity", 0.6);
+  dots
+    .attr("cx", (d) => predVsTrue_xScale(d.trueVal))
+    .attr("cy", (d) => predVsTrue_yScale(d.predVal))
+    .style("fill", "#0877bd");
+  dots.exit().remove();
+}
+
 function getLoss(network: nn.Node[][], dataPoints: Example2D[]): number {
   let loss = 0;
   for (let i = 0; i < dataPoints.length; i++) {
@@ -884,6 +977,7 @@ function updateUI(firstStep = false) {
   d3.select("#loss-test").text(humanReadable(lossTest));
   d3.select("#iter-number").text(addCommas(zeroPad(iter)));
   lineChart.addDataPoint([lossTrain, lossTest]);
+  updatePredVsTruePlot();
 }
 
 function constructInputIds(): string[] {
@@ -1116,6 +1210,7 @@ function simulationStarted() {
 drawDatasetThumbnails();
 initTutorial();
 makeGUI();
+initPredVsTruePlot();
 generateData(true);
 reset(true);
 hideControls();

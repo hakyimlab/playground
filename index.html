@@ -163,6 +163,9 @@ limitations under the License.
           <div class="dataset" title="Spiral">
             <canvas class="data-thumbnail" data-dataset="spiral"></canvas>
           </div>
+          <div class="dataset" title="Linear (βx)">
+            <canvas class="data-thumbnail" data-regDataset="reg-linear"></canvas>
+          </div>
           <div class="dataset" title="Plane">
             <canvas class="data-thumbnail" data-regDataset="reg-plane"></canvas>
           </div>
@@ -280,6 +283,7 @@ limitations under the License.
         <div id="linechart"></div>
       </div>
       <div id="heatmap"></div>
+      <div id="pred-vs-true" style="display:none; clear:both; margin-top:10px;"></div>
       <div style="float:left;margin-top:20px">
         <div style="display:flex; align-items:center;">
 
@@ -305,6 +309,10 @@ limitations under the License.
           <label class="ui-showTestData mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="show-test-data">
             <input type="checkbox" id="show-test-data" class="mdl-checkbox__input" checked>
             <span class="mdl-checkbox__label label">Show test data</span>
+          </label>
+          <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="show-pred-vs-true">
+            <input type="checkbox" id="show-pred-vs-true" class="mdl-checkbox__input">
+            <span class="mdl-checkbox__label label">Pred vs True</span>
           </label>
           <label class="ui-discretize mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="discretize">
             <input type="checkbox" id="discretize" class="mdl-checkbox__input" checked>
